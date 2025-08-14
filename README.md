@@ -56,7 +56,7 @@ The dataset contains:
 
 ## 📜 Steps to Reproduce
 1. **Generate Data**  
-   Run the `generate_insurance_data.py` script to create `insurance_claims.csv`.
+   Run the `generate_insurance_data.ipynb` script to create `insurance_claims.csv`.
 
 2. **Load Data into SQL**  
    Import the CSV into your SQL database (MySQL, SQL Server, or Azure SQL).
