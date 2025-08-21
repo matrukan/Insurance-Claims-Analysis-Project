@@ -27,6 +27,22 @@ The dataset contains:
 - **RiskCategory** – Low / Medium / High.
 - **PolicyLapse** – Yes / No.
 
+#### Insurance Claims Data Dictionary
+
+| **Field**        | **Definition** |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| PolicyID         | A unique identifier assigned to each insurance policy. |
+| CustomerID       | A unique identifier assigned to each customer (policyholder). |
+| PolicyType       | The category of insurance policy purchased (Life / General). |
+| ClaimID          | A unique identifier assigned to each claim filed by a policyholder. |
+| ClaimAmount      | The amount of money requested by the policyholder under a claim. |
+| ClaimStatus      | The current processing stage of a claim (Approved / Rejected / Pending). |
+| ClaimDate        | The date when the policyholder submitted the claim request. |
+| SettlementDate   | The date when the insurer settled or closed the claim (if approved). |
+| RiskCategory     | Classification of the policyholder or policy based on assessed risk (Low / Medium / High). |
+| PolicyLapse      | Indicates whether a policy is active (No) or has lapsed (Yes). |
+
+
 ---
 
 ## ⚙️ Tools & Technologies
