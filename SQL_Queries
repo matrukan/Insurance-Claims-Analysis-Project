@@ -1,0 +1,128 @@
+# Insurance Data Analysis SQL Queries
+
+---
+
+## 1. Basic Analysis
+
+### Count Policies by Type
+```sql
+SELECT PolicyType, COUNT(*) AS TotalPolicies
+FROM Policies
+GROUP BY PolicyType;
+```
+
+### Total Premium Collected
+```sql
+SELECT SUM(PremiumAmount) AS TotalPremium
+FROM Policies;
+```
+
+### Claim Settlement Ratio
+```sql
+SELECT 
+  (SUM(CASE WHEN SettlementStatus = 'Settled' THEN 1 ELSE 0 END) * 100.0) / COUNT(*) AS ClaimSettlementRatio
+FROM Claims;
+```
+
+---
+
+## 2. Intermediate Analysis
+
+### Loss Ratio by Year
+```sql
+SELECT 
+  YEAR(c.ClaimDate) AS Year,
+  SUM(c.ClaimAmount) / SUM(p.PremiumAmount) * 100 AS LossRatio
+FROM Claims c
+JOIN Policies p ON c.PolicyID = p.PolicyID
+GROUP BY YEAR(c.ClaimDate);
+```
+
+### Average Claim Severity by Policy Type
+```sql
+SELECT 
+  p.PolicyType,
+  AVG(c.ClaimAmount) AS AvgClaimSeverity
+FROM Claims c
+JOIN Policies p ON c.PolicyID = p.PolicyID
+GROUP BY p.PolicyType;
+```
+
+### Policy Retention Rate
+```sql
+SELECT 
+  (SUM(CASE WHEN Status = 'Renewed' THEN 1 ELSE 0 END) * 100.0) / COUNT(*) AS RetentionRate
+FROM Policies;
+```
+
+---
+
+## 3. Claim Frequency
+
+### Overall Claim Frequency
+```sql
+SELECT 
+  COUNT(c.ClaimID) * 1.0 / COUNT(DISTINCT p.PolicyID) AS ClaimFrequency
+FROM Claims c
+JOIN Policies p ON c.PolicyID = p.PolicyID
+WHERE YEAR(c.ClaimDate) = 2024;
+```
+
+### Claim Frequency by Policy Type
+```sql
+SELECT 
+  p.PolicyType,
+  COUNT(c.ClaimID) * 1.0 / COUNT(DISTINCT p.PolicyID) AS ClaimFrequency
+FROM Claims c
+JOIN Policies p ON c.PolicyID = p.PolicyID
+WHERE YEAR(c.ClaimDate) = 2024
+GROUP BY p.PolicyType;
+```
+
+### Claim Frequency per 100 Policies
+```sql
+SELECT 
+  p.PolicyType,
+  (COUNT(c.ClaimID) * 100.0 / COUNT(DISTINCT p.PolicyID)) AS ClaimFrequencyPer100
+FROM Claims c
+JOIN Policies p ON c.PolicyID = p.PolicyID
+GROUP BY p.PolicyType;
+```
+
+---
+
+## 4. Advanced Analysis
+
+### Customer Lifetime Value (CLV)
+```sql
+SELECT 
+  c.CustomerID,
+  (AVG(p.PremiumAmount) * AVG(p.RetentionYears)) - SUM(cl.ClaimAmount) AS CLV
+FROM Customers c
+JOIN Policies p ON c.CustomerID = p.CustomerID
+LEFT JOIN Claims cl ON p.PolicyID = cl.PolicyID
+GROUP BY c.CustomerID;
+```
+
+### High-Risk Customers (Frequent Claimants)
+```sql
+SELECT 
+  c.CustomerID,
+  COUNT(cl.ClaimID) AS ClaimCount
+FROM Customers c
+JOIN Policies p ON c.CustomerID = p.CustomerID
+JOIN Claims cl ON p.PolicyID = cl.PolicyID
+GROUP BY c.CustomerID
+HAVING COUNT(cl.ClaimID) > 3;
+```
+
+### Profitability by Region
+```sql
+SELECT 
+  c.Location,
+  SUM(p.PremiumAmount) - SUM(cl.ClaimAmount) AS NetProfit
+FROM Customers c
+JOIN Policies p ON c.CustomerID = p.CustomerID
+LEFT JOIN Claims cl ON p.PolicyID = cl.PolicyID
+GROUP BY c.Location
+ORDER BY NetProfit DESC;
